@@ -79,6 +79,7 @@ function SignupContainer() {
           <AppInputField
             value={state.emailId}
             id={'email'}
+            placeholder="Enter email"
             iconRight={{ icon: 'at-sign' }}
             onChange={(e) => {
               handleState({ emailId: e.target.value, emailError: '' })
