@@ -14,6 +14,7 @@ import { message } from 'antd'
 import dayjs from 'dayjs'
 import _ from 'lodash'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import React, { Fragment, useCallback, useState } from 'react'
 
@@ -44,6 +45,7 @@ type LoggerContainerFiltersT = {
   date: null | string[]
 }
 function LoggerContainer() {
+  const router = useRouter()
   const [state, setState] = useState<LoggerContainerStateT>({
     loading: true,
     error: '',
@@ -113,21 +115,25 @@ function LoggerContainer() {
       getLogs()
     }
   }
+
+  const onLogout = () => {
+    appService.clear()
+    router.push('/')
+  }
   return (
     <Fragment>
       <header className="min-h-[3rem] border-b drop-shadow-xl bg-black sticky z-10 top-0 flex items-center gap-4 text-white py-5 px-7 flex-wrap w-full">
         <H5 className="flex-1">Logger</H5>
-        <Link href="/login">
-          <Icon
-            icon="log-out"
-            onClick={appService.clear}
-            tooltip={{
-              title: 'logout',
-              arrow: true,
-              color: 'cyan',
-            }}
-          />
-        </Link>
+
+        <Icon
+          icon="log-out"
+          onClick={onLogout}
+          tooltip={{
+            title: 'logout',
+            arrow: true,
+            color: 'cyan',
+          }}
+        />
       </header>
       <section className=" py-8 px-6 flex-1 overflow-auto w-full flex flex-col gap-5">
         <div className="flex w-full items-center gap-4 flex-wrap">
