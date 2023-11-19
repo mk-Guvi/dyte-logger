@@ -8,7 +8,7 @@ export const getLogs = async (req: Request) => {
   try {
     
     const body = await req?.json()
-    const {error,result} = await getAllLogsService(body)
+    const {error,result,totalCount} = await getAllLogsService(body)
     
     if(error){
       throw new Error(`${error}`)
@@ -16,6 +16,7 @@ export const getLogs = async (req: Request) => {
     return NextResponse.json({
       status: true,      
       data: result,
+      totalCount
     })
   } catch (e) {
     console.error(e)

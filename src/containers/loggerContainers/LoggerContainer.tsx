@@ -10,13 +10,15 @@ import {
 import { LANG } from '@/src/constants'
 import { Logger } from '@/src/modals'
 import { appService } from '@/src/utils'
+import { useDebounce } from '@/src/utils/debounceHook'
 import { message } from 'antd'
+import axios from 'axios'
 import dayjs from 'dayjs'
 import _ from 'lodash'
-import Link from 'next/link'
+
 import { useRouter } from 'next/router'
 
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 
 type LoggerContainerStateT = {
   loading: boolean
@@ -28,15 +30,43 @@ type LoggerContainerStateT = {
 }
 const Columns: ColumnFieldsT[] = [
   {
-    accessor: 'email',
-    header: 'Email',
+    accessor: 'traceId',
+    header: 'Trace Id',
+  },
+  {
+    accessor: 'spanId',
+    header: 'Span Id',
+  },
+  {
+    accessor: 'level',
+    header: 'Level',
+  },
+  {
+    accessor: 'message',
+    header: 'Message',
+  },
+  {
+    accessor: 'parentResourceId',
+    header: 'Parent ResourceId',
+  },
+  {
+    accessor: 'resourceId',
+    header: 'ResourceId',
+  },
+  {
+    accessor: 'commit',
+    header: 'Commit',
+  },
+  {
+    accessor: 'timestamp',
+    header: 'Date',
   },
 ]
 type GetLogsPayloadT = {
   page?: number
   pageSize?: number
-  status?: string
-  templateId?: string
+  filterBy?: 'ALL' | string[]
+  filterValue?: string
   date?: string[] | null
 }
 type LoggerContainerFiltersT = {
@@ -50,7 +80,7 @@ function LoggerContainer() {
     loading: true,
     error: '',
     data: [],
-    pageSize: 25,
+    pageSize: 50,
     page: 1,
     totalCount: 0,
   })
@@ -59,6 +89,12 @@ function LoggerContainer() {
     filterValue: '',
     date: null,
   })
+  const debouncedSearch = useDebounce(filter?.filterValue, 500)
+
+  useEffect(() => {
+    getLogs({ filterValue: debouncedSearch })
+  }, [debouncedSearch])
+
   const handleState = (payload: Partial<LoggerContainerStateT>) => {
     setState((prev) => ({ ...prev, ...payload }))
   }
@@ -76,18 +112,57 @@ function LoggerContainer() {
       const { pageSize = state?.pageSize, page = state?.page } = payload || {}
       handleState({ loading: true, error: '' })
       let body: Record<string, any> = {
-        offset: page - 1 * pageSize,
+        offset: (page - 1) * pageSize,
         limit: pageSize,
       }
       if (_.has(payload, 'date')) {
         if (payload?.date) {
-          body['date'] = payload.date
+          body['filters'] = { dateFilter: payload.date }
         }
       } else if (filter?.date?.length) {
         const { fromDate, toDate } = getDateFromTo(filter?.date)
-        body['date'] = [fromDate, toDate]
+        body['filters'] = { dateFilter: [fromDate, toDate] }
       }
-    } catch {
+      if (_.has(payload, 'filterValue')) {
+        if (payload?.filterValue) {
+          body['filters'] = {
+            ...body?.filters,
+            filterValue: payload?.filterValue,
+            filterBy: payload?.filterBy || filter.filterBy,
+          }
+        }
+      } else if (filter?.filterValue) {
+        body['filters'] = {
+          ...body?.filters,
+          filterValue: filter?.filterValue,
+          filterBy: payload?.filterBy || filter.filterBy,
+        }
+      }
+      const { data: response } = await axios.post('/logger', body)
+
+      if (response?.status) {
+        let data = response?.data?.map((e: Logger) => {
+          let { metadata, timestamp, ...rest } = e
+          return {
+            ...rest,
+            parentResourceId: metadata?.parentResourceId,
+            timestamp: dayjs(timestamp).format('DD-MM-YYYY'),
+          }
+        })
+        handleState({
+          data,
+          loading: false,
+          totalCount: response?.totalCount || 0,
+          page,
+          pageSize,
+        })
+      } else if (response?.status === false) {
+        handleState({ data: [], loading: false })
+      } else {
+        throw new Error('Failed to fetch logs')
+      }
+    } catch (e) {
+      console.error(e)
       message.error('Failed to Fetch Logs')
       handleState({
         loading: false,
@@ -112,13 +187,15 @@ function LoggerContainer() {
         date: [fromDate, toDate],
       })
     } else {
-      getLogs()
+      getLogs({ date: null })
     }
   }
 
   const onLogout = () => {
     appService.clear()
-    router.push('/')
+    setTimeout(() => {
+      router.push('/')
+    }, 500)
   }
   return (
     <Fragment>
@@ -128,10 +205,11 @@ function LoggerContainer() {
         <Icon
           icon="log-out"
           onClick={onLogout}
+          className="cursor-pointer"
           tooltip={{
             title: 'logout',
             arrow: true,
-            color: 'cyan',
+            color: 'geekblue-inverse',
           }}
         />
       </header>
@@ -139,15 +217,29 @@ function LoggerContainer() {
         <div className="flex w-full items-center gap-4 flex-wrap">
           <div className="flex-1">
             <AppInputField
-              containerClassName="max-w-[20rem] "
+              value={filter?.filterValue}
+              onChange={(e) => {
+                handleFilters({ filterValue: e.target.value })
+              }}
+              containerClassName="max-w-[20rem] !h-[2.5rem] !bg-white drop-shadow"
               placeholder="Search"
               iconRight={{ icon: 'search' }}
             />
-            {/* <AppDatetimePicker value={filter.date} onChange={onChangeDate} /> */}
           </div>
+          <Icon
+            icon="refresh-cw"
+            onClick={() => getLogs()}
+            className="cursor-pointer"
+            tooltip={{
+              title: 'Refresh',
+              arrow: true,
+              color: 'cyan-inverse',
+            }}
+          />
+          <AppDatetimePicker value={filter.date} onChange={onChangeDate} />
         </div>
-        <div className=" rounded-lg drop-shadow-2xl flex-1  bg-blue-50 h-full w-full">
-          {/* <Table
+        <div className=" rounded-lg drop-shadow-2xl h-[70vh]  bg-blue-50 ">
+          <Table
             allRows={state.data}
             allColumns={Columns}
             pageNumber={state.page}
@@ -155,7 +247,7 @@ function LoggerContainer() {
             pageSize={state.pageSize}
             totalCount={state.totalCount}
             onChangePagination={onChangePagination}
-          /> */}
+          />
         </div>
       </section>
     </Fragment>

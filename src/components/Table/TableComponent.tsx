@@ -54,7 +54,7 @@ export function Table(props: TablePropsT) {
 
   return (
     <div
-      className={`h-full w-full bg-white  relative flex flex-col   border rounded-lg `}
+      className={`h-full w-full bg-white  relative flex flex-col   border rounded-lg overflow-auto`}
     >
       {loader ||
       manualLoading ||
@@ -64,7 +64,7 @@ export function Table(props: TablePropsT) {
           {loader || manualLoading ? (
             <CircularLoader className="h-7 w-7 " />
           ) : (
-            <NoDataComponent imageClassName="!w-[30%] " label="No Logs" />
+            <NoDataComponent imageClassName="!w-[50%] " label="No Logs" />
           )}
         </div>
       ) : null}
@@ -84,7 +84,7 @@ export function Table(props: TablePropsT) {
                   return (
                     <th
                       scope="col"
-                      className={`flex-1 pl-4 items-center min-w-[130px]   flex h-full  p-[0.5rem]`}
+                      className={`flex-1 pl-4 items-center min-w-[15rem]   flex h-full  p-[0.5rem]`}
                       key={`${eachCol?.accessor} ${colI}`}
                     >
                       {RenderHeader({
@@ -100,11 +100,14 @@ export function Table(props: TablePropsT) {
             {!loader && !manualLoading && allRows?.length
               ? allRows?.map((eachRow, rowIndex) => {
                   return (
-                    <tr className={`min-h-[40px] flex  `} key={rowIndex}>
+                    <tr
+                      className={`min-h-[40px] flex  border-b`}
+                      key={rowIndex}
+                    >
                       {columns?.map((eachCol, colIndex) => {
                         return (
                           <td
-                            className={`pl-4  z-20   flex-1   flex items-center min-w-[130px] relative break-words p-[0.5rem]`}
+                            className={`pl-4  z-20   flex-1   flex items-center min-w-[15rem] relative break-words p-[0.7rem]`}
                             key={`${colIndex} ${rowIndex}`}
                           >
                             {RenderCell({
