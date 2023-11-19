@@ -5,21 +5,27 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "clean:modules": "rm -rf node_modules && rm -rf .next && rm -rf package.lock.json && rm yarn.lock && yarn",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "antd": "^5.11.2",
+    "@ant-design/cssinjs": "^1.18.0-alpha.0",
+    "antd": "^5.8.6",
+    "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.1",
-    "next": "14.0.3",
+    "next": "13.4.11",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-styled-components": "^2.2.0"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.5",
     "@types/bcryptjs": "^2.4.6",
+    "@types/js-cookie": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

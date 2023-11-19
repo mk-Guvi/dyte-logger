@@ -1,12 +1,50 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/2sZOX9xt)
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+[![Product Name Screen Shot][product-screenshot]](https://example.com)
+
+There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+
+Here's why:
+* Your time should be focused on creating something amazing. A project that solves a problem and helps others
+* You shouldn't be doing the same tasks over and over like creating a README from scratch
+* You should implement DRY principles to the rest of your life :smile:
+
+Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+
+
+### Built With
+
+* NextJs
+* ReactJs
+* TailwindCss
+* AntD
+* Typescript
+
+### Deployment
+
+Deployed in vercel
+
+https://dyte-logger.vercel.app
+
+
+<!-- GETTING STARTED -->
 ## Getting Started
 
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
 
-#### Dependency Setup
+### Prerequisites
 
 - Next Js
 - React
 - Typescript
 - node version: ^18.14.2
+
+
+### Installation
 
 First, run the development server:
 
@@ -24,14 +62,21 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<!-- CONTRIBUTING -->
+## Contributing
 
----
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## Branching Conventions
 
@@ -59,3 +104,9 @@ To learn more about Next.js, take a look at the following resources:
 - `config` - when worked on config level changes like env, lang updates.
 
 > <span style="color:#228BE6"> NOTE: Keep these commit tags in your commit message and don't mispell. </span>
+
+
+<!-- CONTACT -->
+## Contact
+
+Your Name - [Musharaf](www.musharaf.co) - mk.musharaf127@gmail.com

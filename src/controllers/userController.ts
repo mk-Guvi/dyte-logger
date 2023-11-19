@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { connectMongo } from '../lib/mongoConnection'
 import { UserModel } from '../modals'
 import { compareHashedPassword, generateHash, generateToken } from './helpers'
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import { appService } from '../utils'
 
 export const signupUser = async (req: Request) => {
   try {
@@ -31,10 +33,12 @@ export const signupUser = async (req: Request) => {
         },
       })
     }
-  } catch (e) {
+  } catch (e:any) {
     console.error(e)
+    
     return NextResponse.json({
       status: false,
+      error:e?.code==11000?"Email already exist":""
     })
   }
 }
@@ -49,7 +53,6 @@ export const loginUser = async (req: Request) => {
         error: `${!body?.emailId ? 'Email Id' : 'Password'} required`,
       })
     } else {
-      
       const user = await UserModel.findOne({
         emailId: body?.emailId,
       })
@@ -81,6 +84,55 @@ export const loginUser = async (req: Request) => {
             },
           })
         }
+      }
+    }
+  } catch (e) {
+    console.error(e)
+    return NextResponse.json({
+      status: false,
+      error: 'Failed to login',
+    })
+  }
+}
+
+export const validateAndGenerateToken = async (req: Request) => {
+  try {
+    const body = await req.json()
+    const refreshToken = body.refreshToken
+    if (!refreshToken) {
+      return NextResponse.json({
+        status: false,
+        error: `Refresh Token Required`,
+      })
+    } else {
+      const decodedToken = jwt.verify(
+        refreshToken,
+        `${process.env.JWT_SECRET}`,
+      ) as JwtPayload
+
+      if (decodedToken?.exp) {
+        // Check if the token is not expired
+        const isExpired = appService.checkTokenValidity(+decodedToken?.exp)
+
+        if (decodedToken?.exp && !isExpired) {
+          return NextResponse.json({
+            status: true,
+            ...generateToken({
+              emailId: decodedToken?.emailId,
+              role: decodedToken?.role,
+            }),
+          })
+        } else {
+          return NextResponse.json({
+            status: false,
+            error: 'Refresh Token Expired',
+          })
+        }
+      } else {
+        return NextResponse.json({
+          status: false,
+          error: 'Invalid Refresh Token',
+        })
       }
     }
   } catch (e) {

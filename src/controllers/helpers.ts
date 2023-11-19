@@ -11,11 +11,11 @@ export const compareHashedPassword = async (
   return await compare(password, hashedPassword)
 }
 
-type generateTokenPayloadT={
+export type GenerateTokenPayloadT={
     emailId: string
     role:string
 }
-export const generateToken = (payload:generateTokenPayloadT) => {
+export const generateToken = (payload:GenerateTokenPayloadT) => {
     const expiresAt = Math.floor(Date.now() / 1000) + expiresInToSeconds("24h");
   return {
     token: jwt.sign(payload, `${process.env.JWT_SECRET}`, {

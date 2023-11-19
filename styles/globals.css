@@ -2,26 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* Font size adjustments for small screens (e.g., mobile) */
+@media (max-width: 576px) {
+  html,
+  body {
+    font-size: 12px; /* Adjust font size for small screens */
   }
 }
 
+/* Font size adjustments for medium screens (e.g., tablets) */
+@media (min-width: 577px) and (max-width: 992px) {
+  html,
+  body {
+    font-size: 14px; /* Adjust font size for medium screens */
+  }
+}
+
+/* Works on Firefox */
+* {
+  scrollbar-width: auto;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f3f5;
+}
+*::-webkit-scrollbar-track:hover {
+  background: #dee2e6;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #adb5bd;
+  border-radius: 20px;
+  cursor: pointer;
+}
+*::-webkit-scrollbar-thumb:active {
+  background-color: #495057;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+margin:0
 }
