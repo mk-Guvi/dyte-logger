@@ -24,6 +24,6 @@ export const loggerSchema: Schema = new Schema({
   metadata: {
     parentResourceId: String,
   },
-})
+}).index({_id:1})
 
 export const loggerModel=models.logs||mongoose.model<Logger>('logs', loggerSchema)
